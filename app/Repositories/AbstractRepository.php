@@ -17,7 +17,7 @@ abstract class AbstractRepository
     /**
      * @return Collection
      */
-    public function listAll(): Model
+    public function listAll(): Collection
     {
         return $this->model->get();
     }

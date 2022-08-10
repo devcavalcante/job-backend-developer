@@ -17,7 +17,7 @@ services:
       context: ./Docker/nginx
     image: somosyampi/http
     ports:
-        - 8003:80
+        - 8001:80
     volumes:
         - .:/app:delegated
     environment:
