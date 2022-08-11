@@ -72,12 +72,12 @@ class ImportProductsCommand extends Command
             {
                 $confirm = $this->confirm('O produto %s ja foi importado deseja atualizar?');
                  
-                 if($confirm)
+                 if(!$confirm)
                  {
-                    $this->productRepository->destroy($productId);
+                    return $this->info('Açâo cancelada');
                  }
-
-                 return $this->info('Açâo cancelada');
+                
+                 $this->productRepository->destroy($productId);
             }
 
             $this->productRepository->create($product);
