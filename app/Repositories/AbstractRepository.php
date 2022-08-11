@@ -38,7 +38,7 @@ abstract class AbstractRepository
         return $model;
     }
 
-    public function findByFilters(array $filters): Model
+    public function findByFilters(array $filters): Collection
     {
         $filters = Arr::only($filters, $this->model->getFillable());
 

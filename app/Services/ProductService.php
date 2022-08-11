@@ -37,4 +37,14 @@ class ProductService
     {
         return $this->productRepository->findByIdOrFail($id);
     }
+
+    public function update(array $data, string $id): Model
+    {
+        return $this->productRepository->update($data, $id);
+    }
+
+    public function delete(string $id): Model
+    {
+        return $this->productRepository->destroy($id);
+    }
 }
