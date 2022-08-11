@@ -38,8 +38,12 @@ class ImportProductsCommand extends Command
     public function handle()
     {
         $products = Http::get(self::URL);
-        $id = $this->option('id');
-        $id ? $this->importProductById($id) : $this->importProducts($products->json());
+
+        if($this->option('id')){
+            $this->importProductById($this->option('id'));
+        }
+        
+        $this->importProducts($products->json());
     }
 
     private function importProductById(string $id)
