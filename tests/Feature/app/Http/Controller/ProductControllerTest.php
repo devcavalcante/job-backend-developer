@@ -21,7 +21,7 @@ class ProductControllerTest extends TestCase
      *
      * @return void
      */
-    public function testShouldListaAll()
+    public function testShouldListAll()
     {
         $response = $this->get('api/products');
 
