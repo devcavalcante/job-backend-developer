@@ -23,7 +23,7 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param string $id
+     * @param  string $id
      * @return Model
      * @throws NotFoundException
      */
@@ -38,7 +38,7 @@ abstract class AbstractRepository
         return $model;
     }
 
-    public function findByFilters(array $filters): Collection
+    public function findByFilters(array $filters): array|Collection
     {
         $filters = Arr::only($filters, $this->model->getFillable());
 

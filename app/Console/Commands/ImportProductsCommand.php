@@ -49,8 +49,7 @@ class ImportProductsCommand extends Command
     {
         $product = Http::get(self::URL.'/'.$id);
         $findProduct = $this->productRepository->findByFilters(['id' => $id]);
-        $product = $product->json();
-        $product = $this->formatData($product); 
+        $product = $this->formatData($product->json()); 
 
         if($findProduct->isNotEmpty()) {
             $confirm = $this->confirm('Esse produto ja foi importado, deseja atualizar as informaçôes?');
@@ -76,7 +75,7 @@ class ImportProductsCommand extends Command
                     return $this->info('Açâo cancelada');
                 }
                 
-                 $this->productRepository->destroy($productId);
+                $this->productRepository->destroy($productId);
             }
 
             $this->productRepository->create($product);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\app\Http\Controller;
 
 use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -46,6 +46,52 @@ class ProductControllerTest extends TestCase
             ->assertSeeText('Produto nâo encontrado');
     }
 
+    public function testShouldFindByNameCategory()
+    {
+        $product = Product::first();
+
+        $response = $this->get(
+            sprintf('api/products?name=%s&category=%s', $product->name, $product->category)
+        );
+
+        $response->assertStatus(200);
+        $this->assertEquals(json_encode([$product]), $response->getContent());
+    }
+
+    public function testShouldFindByCategory()
+    {
+        $product = Product::first();
+
+        $response = $this->get(
+            sprintf('api/products?category=%s', $product->category)
+        );
+        
+        $response->assertStatus(200);
+        $this->assertEquals(json_encode([$product]), $response->getContent());
+    }
+
+    public function testShouldFindByImageNotNull()
+    {
+        $response = $this->get('api/products?image_url=true');
+        
+        $response->assertStatus(200);
+        $this->assertImageNotNull(json_decode($response->getContent(), true));
+    }
+
+    public function testShouldFindByImageNull()
+    {
+        $response = $this->get('api/products?image_url=false');
+        $response->assertStatus(200);
+        $this->assertImageNull(json_decode($response->getContent(), true));
+    }
+
+    public function testShouldEmptyFilters()
+    {
+        $response = $this->get('api/products?teste=teste');
+        $response->assertStatus(200);
+        $this->assertEquals([], json_decode($response->getContent(), true));
+    }
+
     public function testShouldCreate()
     {
         $payload = [
@@ -88,7 +134,6 @@ class ProductControllerTest extends TestCase
         ];
 
         $response = $this->put(sprintf('api/product/%s', $product->id), $payload);
-        $data = json_decode($response->getContent(), true);
         $response->assertStatus(201);
         $this->assertDatabaseHas('products', $payload);
     }
@@ -100,5 +145,19 @@ class ProductControllerTest extends TestCase
         $response = $this->delete(sprintf('api/product/%s', $product->id));
         $response->assertStatus(204);
         $this->assertDatabaseMissing('products', $product->toArray());
+    }
+
+    private function assertImageNotNull(array $data)
+    {
+        foreach($data as $item) {
+            $this->assertNotEmpty($item['image_url']);
+        }
+    }
+
+    private function assertImageNull(array $data)
+    {
+        foreach($data as $item) {
+            $this->assertEmpty($item['image_url']);
+        }
     }
 }

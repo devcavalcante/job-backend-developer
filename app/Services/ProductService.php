@@ -13,7 +13,7 @@ class ProductService
     {
     }
 
-    public function findMany(array $filters): Collection
+    public function findMany(array $filters): Collection|array
     {
         if(!empty(Arr::except($filters, 'image_url'))) {
             return $this->productRepository->findByFilters($filters);
@@ -21,7 +21,7 @@ class ProductService
 
         if(Arr::has($filters, 'image_url')) {
             return $this->productRepository->findProductsByImage(
-                Arr::get($filters, 'image_url')
+                filter_var(Arr::get($filters, 'image_url'), FILTER_VALIDATE_BOOLEAN)
             );
         }
 
