@@ -39,7 +39,8 @@ class ImportProductsCommand extends Command
     {
         $products = Http::get(self::URL);
 
-        if($this->option('id')){
+        if($this->option('id'))
+        {
             $this->importProductById($this->option('id'));
         }
         
