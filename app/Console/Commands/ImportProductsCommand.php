@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Product;
 use App\Repositories\ProductRepository;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
@@ -39,12 +38,11 @@ class ImportProductsCommand extends Command
     {
         $products = Http::get(self::URL);
 
-        if($this->option('id'))
-        {
-            $this->importProductById($this->option('id'));
+        if($this->option('id')) {
+            return $this->importProductById($this->option('id'));
         }
         
-        $this->importProducts($products->json());
+        return $this->importProducts($products->json());
     }
 
     private function importProductById(string $id)
@@ -54,11 +52,9 @@ class ImportProductsCommand extends Command
         $product = $product->json();
         $product = $this->formatData($product); 
 
-        if($findProduct->isNotEmpty())
-        {
-           $confirm = $this->confirm('Esse produto ja foi importado, deseja atualizar as informaçôes?');
-
-           return $confirm ? $this->updateProduct($product, $id) : $this->info('Açâo cancelada');
+        if($findProduct->isNotEmpty()) {
+            $confirm = $this->confirm('Esse produto ja foi importado, deseja atualizar as informaçôes?');
+            return $confirm ? $this->updateProduct($product, $id) : $this->info('Açâo cancelada');
         }
 
         $this->productRepository->create($product);
@@ -73,21 +69,19 @@ class ImportProductsCommand extends Command
             $productId = Arr::get($product, 'id');
             $findProduct = $this->productRepository->findByFilters(['id' => $productId]);
 
-            if($findProduct->isNotEmpty())
-            {
-                $confirm = $this->confirm('O produto %s ja foi importado deseja atualizar?');
+            if($findProduct->isNotEmpty()) {
+                $confirm = $this->confirm(sprintf('O produto %s ja foi importado deseja reimportar?', $productId));
                  
-                 if(!$confirm)
-                 {
+                if(!$confirm) {
                     return $this->info('Açâo cancelada');
-                 }
+                }
                 
                  $this->productRepository->destroy($productId);
             }
 
             $this->productRepository->create($product);
         }
-        return $this->info('Produtos importados com sucesso');
+        $this->info('Produtos importados com sucesso');
     }
 
     private function formatData(array $product): array
@@ -102,6 +96,6 @@ class ImportProductsCommand extends Command
     private function updateProduct(array $data, string $id)
     {
         $this->productRepository->update($data, $id);
-        return $this->info('Produto atualizado com sucesso');
+        $this->info('Produto atualizado com sucesso');
     }
 }

@@ -2,16 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Exceptions\NotFoundException;
 use App\Models\Product;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ProductControllerTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
@@ -32,7 +29,8 @@ class ProductControllerTest extends TestCase
         $response->assertJsonCount(20);
     }
 
-    public function testShouldListOne(){
+    public function testShouldListOne()
+    {
         $product = Product::first();
 
         $response = $this->get(sprintf('api/product/%s', $product->id));
@@ -41,10 +39,11 @@ class ProductControllerTest extends TestCase
         $this->assertEquals($product->toArray(), $data);
     }
 
-    public function testShouldGetNotFoundMessage(){
+    public function testShouldGetNotFoundMessage()
+    {
         $this->get(sprintf('api/product/%s', 100))
-        ->assertStatus(404)
-        ->assertSeeText('Produto nâo encontrado');
+            ->assertStatus(404)
+            ->assertSeeText('Produto nâo encontrado');
     }
 
     public function testShouldCreate()
@@ -74,9 +73,32 @@ class ProductControllerTest extends TestCase
         ];
 
         $this->post('api/products', $payload)
-        ->assertSessionHasErrors('name')
-        ->assertStatus(302);
+            ->assertSessionHasErrors('name')
+            ->assertStatus(302);
 
         $this->assertDatabaseMissing('products', $payload);
+    }
+
+    public function testShouldUpdate()
+    {
+        $product = Product::first();
+
+        $payload = [
+            "price" => 200.95,
+        ];
+
+        $response = $this->put(sprintf('api/product/%s', $product->id), $payload);
+        $data = json_decode($response->getContent(), true);
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('products', $payload);
+    }
+
+    public function testShouldDestroy()
+    {
+        $product = Product::first();
+
+        $response = $this->delete(sprintf('api/product/%s', $product->id));
+        $response->assertStatus(204);
+        $this->assertDatabaseMissing('products', $product->toArray());
     }
 }

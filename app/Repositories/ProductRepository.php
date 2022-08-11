@@ -14,13 +14,15 @@ class ProductRepository extends AbstractRepository
 
     public function findProductsByImage(bool $hasImage): Collection
     {
-        return $this->model
-        ->when(!$hasImage, function($query){
-            return $query->whereNull('image_url');
-        })
-        ->when($hasImage, function($query){
-            return $query->whereNotNull('image_url');
-        })
+        return $this->model->when(
+            !$hasImage, function ($query) {
+                return $query->whereNull('image_url');
+            }
+        )->when(
+            $hasImage, function ($query) {
+                    return $query->whereNotNull('image_url');
+            }
+        )
         ->get();
     }
 }

@@ -8,8 +8,8 @@ use Illuminate\Http\Response;
 class NotFoundException extends Exception
 {
         /**
-     * @var mixed|string
-     */
+         * @var mixed|string
+         */
     protected $message;
 
     public function __construct(string $message)

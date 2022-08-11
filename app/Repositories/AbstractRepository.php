@@ -42,7 +42,7 @@ abstract class AbstractRepository
     {
         $filters = Arr::only($filters, $this->model->getFillable());
 
-        if(empty($filters)){
+        if(empty($filters)) {
             return [];
         }
 
@@ -50,7 +50,7 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param array $data
+     * @param  array $data
      * @return Model
      */
     public function create(array $data): Model
@@ -59,8 +59,8 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param string $id
-     * @param array $data
+     * @param  string $id
+     * @param  array  $data
      * @return Model
      * @throws NotFoundException
      */
@@ -72,7 +72,7 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param string $id
+     * @param  string $id
      * @return Model
      * @throws NotFoundException
      */

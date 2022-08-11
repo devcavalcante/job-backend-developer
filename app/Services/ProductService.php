@@ -15,11 +15,11 @@ class ProductService
 
     public function findMany(array $filters): Collection
     {
-        if(!empty(Arr::except($filters, 'image_url'))){
+        if(!empty(Arr::except($filters, 'image_url'))) {
             return $this->productRepository->findByFilters($filters);
         }
 
-        if(Arr::has($filters, 'image_url')){
+        if(Arr::has($filters, 'image_url')) {
             return $this->productRepository->findProductsByImage(
                 Arr::get($filters, 'image_url')
             );
